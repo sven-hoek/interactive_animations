@@ -1,4 +1,7 @@
 // Distance constraint example, inspired by https://zalo.github.io/blog/constraints/
+
+const gravity = new Vector(0, 5);
+
 const DistanceConstraint = Object.freeze({
   MIN_DISTANCE: 0,
   MAX_DISTANCE: 1,
@@ -29,7 +32,7 @@ class MouseCircle {
   draw() {
     ctx.beginPath();
     ctx.arc(this.position.x, this.position.y, this.radius, 0, Math.PI*2);
-    ctx.fillStyle = "#0095DD";
+    ctx.fillStyle = "#222";
     ctx.fill();
     ctx.closePath();
   }
@@ -50,7 +53,7 @@ class ConstrainedPoint{
   draw() {
     ctx.beginPath();
     ctx.arc(this.position.x, this.position.y, 10, 0, Math.PI*2);
-    ctx.fillStyle = "#FF0000";
+    ctx.fillStyle = "#310091";
     ctx.fill();
     ctx.closePath();
   }
@@ -66,6 +69,7 @@ class DistanceConstraintChain {
     this.points[0] = mouse_event.position;
     for (let i = 1; i < this.points.length; i++) {
       const previous = this.points[i - 1];
+      this.points[i] = this.points[i].add(gravity);
       this.points[i] = constrainDistance(this.points[i], previous, this.link_length, DistanceConstraint.FIXED_DISTANCE);
     }
   }
@@ -73,9 +77,10 @@ class DistanceConstraintChain {
   draw() {
     this.points.forEach((point, i, points) => {
       ctx.beginPath();
-      ctx.arc(point.x, point.y, 5, 0, Math.PI*2);
-      ctx.fillStyle = "#ABCDDD";
-      ctx.fill();
+      ctx.arc(point.x, point.y, this.link_length, 0, Math.PI*2);
+      ctx.strokeStyle = "#FFFFFF";
+      ctx.stroke();
+      ctx.closePath();
 
       if (i > 0) {
         const previous = points[i - 1];
@@ -84,8 +89,8 @@ class DistanceConstraintChain {
         ctx.lineTo(point.x, point.y);
         ctx.strokeStyle = "#000000";
         ctx.stroke();
+        ctx.closePath();
       }
-      ctx.closePath();
     });
   }
 }
@@ -97,7 +102,7 @@ for (let i = 0; i < 50; i++) {
   drawables.push(new ConstrainedPoint(drawables[0], 100, DistanceConstraint.MIN_DISTANCE));
   drawables.push(new ConstrainedPoint(drawables[0], 100, DistanceConstraint.FIXED_DISTANCE));
 }
-drawables.push(new DistanceConstraintChain(30, 20));
+drawables.push(new DistanceConstraintChain(100, 5));
 
 function mainLoop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
