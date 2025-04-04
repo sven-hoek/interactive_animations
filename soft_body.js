@@ -1,5 +1,4 @@
-var canvas = document.getElementById("myCanvas");
-var ctx = canvas.getContext("2d");
+
 /*
 var rightPressed = false;
 var leftPressed = false;
@@ -29,49 +28,8 @@ function keyUpHandler(e) {
         upPressed = false;
     }
 }
-function mouseMoveHandler(e) {
-  mouse_x = e.clientX
-}
 */
 
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Class representing a 2D Vector
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-class Vector {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-  }
-
-  add(v) { return new Vector(this.x + v.x, this.y + v.y); }
-
-  subtract(v) { return new Vector(this.x - v.x, this.y - v.y); }
-
-  mult(s) { return new Vector(this.x * s, this.y * s); }
-
-  rotate(a) {
-    const cos_a = Math.cos(a);
-    const sin_a = Math.sin(a);
-    const x = cos_a * this.x - sin_a * this.y;
-    const y = sin_a * this.x + cos_a * this.y;
-    return new Vector(x, y);
-  }
-
-  dot(v) { return this.x * v.x + this.y * v.y; }
-
-  getSquaredMagnitude() { return this.x * this.x + this.y * this.y; }
-
-  getMagnitude() { return Math.sqrt(this.getSquaredMagnitude()); }
-
-  getWithMagnitude(m) { return this.getMagnitude() > 0 ? this.mult(m / this.getMagnitude()) : new Vector(0, 0); }
-
-  getDistance(v) { return this.subtract(v).getMagnitude(); }
-
-  getAngle(v) { return Math.acos(this.getWithMagnitude(1).dot(v.getWithMagnitude(1))); }
-
-  toString() { return `(${this.x}, ${this.y})`; }
-}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Class representing a point of an elastic blob
@@ -239,50 +197,15 @@ class SoftBody {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// HELPER FUNCTIONS
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-function isXWithinCanvas(x) { return x >= 0 && x <= canvas.width; }
-function isYWithinCanvas(y) { return y >= 0 && y <= canvas.height; }
-function isVectorWithinCanvas(v) { return isXWithinCanvas(v.x) && isYWithinCanvas(v.y); }
-
-function clamp(x, min, max) { return Math.max(min, Math.min(x, max)); }
-
-function clampVectorToRect(v, upper_left, bottom_right) {
-  return new Vector(
-    clamp(v.x, upper_left.x, bottom_right.x),
-    clamp(v.y, upper_left.y, bottom_right.y),
-  );
-}
-
-function clampVectorToCanvas(v) { return clampVectorToRect(v, canvas_ul, canvas_br); }
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // GLOBAL CONSTANTS
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-const canvas_center = new Vector(canvas.width / 2, canvas.height / 2);
-const canvas_ul = new Vector(0, 0);
-const canvas_br = new Vector(canvas.width, canvas.height);
 
 const gravity = new Vector(0, 0.2);
 var drawables = new Array();
 
-var mouse_state = {
-  position: new Vector(0, 0),
-  isDown: false,
-};
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CREATION OF OBJECTS AND UPDATE LOOP
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-document.addEventListener("mousemove", (e) => {
-  mouse_state.position = new Vector(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
-});
-document.addEventListener("mousedown", (e) => { mouse_state.isDown = true; });
-document.addEventListener("mouseup", (e) => { mouse_state.isDown = false; });
 
 // let blob_point = new SoftBodyPoint(canvas_center, new Vector(5, 0), 10, 0.99, -1);
 let blob = new SoftBody(canvas_center, 19, 50, 1.2, 5);
