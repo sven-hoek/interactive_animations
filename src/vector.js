@@ -36,4 +36,6 @@ class Vector {
     clampToRect(upper_left, bottom_right) { return new Vector(clamp(this.x, upper_left.x, bottom_right.x), clamp(this.y, upper_left.y, bottom_right.y)); }
 
     toString() { return `(${this.x}, ${this.y})`; }
+
+    copy() { return new Vector(this.x, this.y); }
   }

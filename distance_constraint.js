@@ -69,7 +69,7 @@ class DistanceConstraintChain {
     this.points[0] = mouse_event.position;
     for (let i = 1; i < this.points.length; i++) {
       const previous = this.points[i - 1];
-      this.points[i] = this.points[i].add(gravity);
+      // this.points[i] = this.points[i].add(gravity);
       this.points[i] = constrainDistance(this.points[i], previous, this.link_length, DistanceConstraint.FIXED_DISTANCE);
     }
   }
@@ -95,6 +95,49 @@ class DistanceConstraintChain {
   }
 }
 
+class FABRIKChain {
+  constructor(n, link_length) {
+    this.link_length = link_length;
+    this.points = new Array(n).fill(null).map(() => new Vector(0, 0));
+  }
+
+  update(mouse_event) {
+    this.points[0] = mouse_event.position;
+    for (let i = 1; i < this.points.length; i++) {
+      const previous = this.points[i - 1];
+      // this.points[i] = this.points[i].add(gravity);
+      this.points[i] = constrainDistance(this.points[i], previous, this.link_length, DistanceConstraint.FIXED_DISTANCE);
+    }
+
+    this.points[this.points.length - 1] = canvas_center.copy();
+    for (let i = this.points.length - 1; i > 0; i--) {
+      const current = this.points[i];
+      // this.points[i] = this.points[i].add(gravity);
+      this.points[i - 1] = constrainDistance(this.points[i - 1], current, this.link_length, DistanceConstraint.FIXED_DISTANCE);
+    }
+  }
+
+  draw() {
+    this.points.forEach((point, i, points) => {
+      ctx.beginPath();
+      ctx.arc(point.x, point.y, this.link_length, 0, Math.PI*2);
+      ctx.strokeStyle = "#000";
+      ctx.stroke();
+      ctx.closePath();
+
+      if (i > 0) {
+        const previous = points[i - 1];
+        ctx.beginPath();
+        ctx.moveTo(previous.x, previous.y);
+        ctx.lineTo(point.x, point.y);
+        ctx.strokeStyle = "#FFF";
+        ctx.stroke();
+        ctx.closePath();
+      }
+    });
+  }
+}
+
 let drawables = [];
 drawables.push(new MouseCircle(100))
 drawables.push(new ConstrainedPoint(drawables[0], 100, DistanceConstraint.MAX_DISTANCE));
@@ -102,7 +145,8 @@ for (let i = 0; i < 50; i++) {
   drawables.push(new ConstrainedPoint(drawables[0], 100, DistanceConstraint.MIN_DISTANCE));
   drawables.push(new ConstrainedPoint(drawables[0], 100, DistanceConstraint.FIXED_DISTANCE));
 }
-drawables.push(new DistanceConstraintChain(100, 5));
+// drawables.push(new DistanceConstraintChain(100, 5));
+drawables.push(new FABRIKChain(50, 5));
 
 function mainLoop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
