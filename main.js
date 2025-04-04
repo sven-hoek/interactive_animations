@@ -58,6 +58,8 @@ class Vector {
     return new Vector(x, y);
   }
 
+  dot(v) { return this.x * v.x + this.y * v.y; }
+
   getSquaredMagnitude() { return this.x * this.x + this.y * this.y; }
 
   getMagnitude() { return Math.sqrt(this.getSquaredMagnitude()); }
@@ -66,13 +68,15 @@ class Vector {
 
   getDistance(v) { return this.subtract(v).getMagnitude(); }
 
+  getAngle(v) { return Math.acos(this.getWithMagnitude(1).dot(v.getWithMagnitude(1))); }
+
   toString() { return `(${this.x}, ${this.y})`; }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Class representing a point of an elastic blob
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-class BlobPoint {
+class SoftBodyPoint {
   constructor(position, speed, radius, dampening_factor, lifetime) {
     this.position = new Vector(position.x, position.y);
     this.previous_position = position.subtract(speed);
@@ -83,7 +87,7 @@ class BlobPoint {
     this.lifetime = lifetime;
     drawables.push(this)
 
-    console.log("Creating BlobPoint", this)
+    console.log("Creating SoftBodyPoint", this)
   }
 
   draw() {
@@ -113,6 +117,16 @@ class BlobPoint {
     }
   }
 
+  applyMouseConstraint(mouse_state) {
+    if (!mouse_state.isDown) return;
+
+    const diff = mouse_state.position.subtract(this.position);
+    const distance = diff.getMagnitude();
+    if (distance < 25) {
+      this.position = this.position.add(diff.getWithMagnitude(distance * 0.4));
+    }
+  }
+
   accumulateDisplacement(v) {
     this.displacement = this.displacement.add(v);
     this.displacement_weight += 1;
@@ -126,8 +140,9 @@ class BlobPoint {
     }
   }
 
-  update() {
+  update(mouse_state) {
     this.applyDisplacement();
+    this.applyMouseConstraint(mouse_state);
     this.restrictPositionToCanvas();
     this.integrateKinematics();
     this.updateLifetime();
@@ -137,9 +152,9 @@ class BlobPoint {
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Class representing an elastic blob
+// Class representing an elastic body
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-class Blob {
+class SoftBody {
   constructor(origin, n_points, radius, puffiness, iterations) {
     this.radius = radius;
     this.area = radius * radius * Math.PI * puffiness;
@@ -149,16 +164,16 @@ class Blob {
     this.points = new Array(n_points).fill(null).map((value, i) => {
       const angle = 2 * Math.PI * i / n_points - Math.PI / 2;
       const offset = new Vector(Math.cos(angle) * radius, Math.sin(angle) * radius);
-      return new BlobPoint(origin.add(offset), new Vector(5, 0), 3, 0.99, 600);
+      return new SoftBodyPoint(origin.add(offset), new Vector(5, 0), 3, 0.99, 2400);
     });
     this.lifetime = -1;
     drawables.push(this);
   }
 
-  update() {
+  applyDistanceConstraints() {
     for (let i = 0; i < this.iterations; ++i) {
       this.points.forEach((cur, i, points) => {
-        let next  = points[i == points.length - 1 ? 0 : i + 1];
+        const next  = points[i == points.length - 1 ? 0 : i + 1];
 
         const diff = next.position.subtract(cur.position);
         if (diff.getMagnitude() != this.chord_length) {
@@ -169,17 +184,44 @@ class Blob {
         }
       });
     }
+  }
 
+  applyAreaConstraint() {
     const area_error = this.area - this.getArea();
     const offset = area_error / this.circumference;
 
     this.points.forEach((cur, i, points) => {
-      let prev = points[i == 0 ? points.length - 1 : i - 1];
-      let next  = points[i == points.length - 1 ? 0 : i + 1];
+      const prev = points[i == 0 ? points.length - 1 : i - 1];
+      const next  = points[i == points.length - 1 ? 0 : i + 1];
       const secant = next.position.subtract(prev.position);
       const normal = secant.rotate(-Math.PI / 2).getWithMagnitude(offset);
       cur.accumulateDisplacement(normal);
     })
+  }
+
+  applyAngleConstraints(min_angle) {
+    this.points.forEach((cur, i, points) => {
+      let prev = points[i == 0 ? points.length - 1 : i - 1];
+      let next  = points[i == points.length - 1 ? 0 : i + 1];
+
+      const prev_vec = prev.position.subtract(cur.position);
+      const next_vec = next.position.subtract(cur.position);
+      const angle = prev_vec.getAngle(next_vec);
+
+      const angle_diff = min_angle - angle;
+      if (angle_diff > 0) {
+        const prev_offset = prev_vec.rotate(angle_diff / 2).subtract(prev_vec);
+        const next_offset = next_vec.rotate(-angle_diff / 2).subtract(next_vec);
+        prev.accumulateDisplacement(prev_offset);
+        next.accumulateDisplacement(next_offset);
+      }
+    })
+  }
+
+  update(mouse_state) {
+    this.applyDistanceConstraints();
+    this.applyAreaConstraint();
+    this.applyAngleConstraints(Math.PI / 0.8);
   }
 
   draw() {}
@@ -227,18 +269,29 @@ const canvas_br = new Vector(canvas.width, canvas.height);
 const gravity = new Vector(0, 0.2);
 var drawables = new Array();
 
+var mouse_state = {
+  position: new Vector(0, 0),
+  isDown: false,
+};
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CREATION OF OBJECTS AND UPDATE LOOP
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// let blob_point = new BlobPoint(canvas_center, new Vector(5, 0), 10, 0.99, -1);
-let blob = new Blob(canvas_center, 50, 70, 2, 10);
+document.addEventListener("mousemove", (e) => {
+  mouse_state.position = new Vector(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+});
+document.addEventListener("mousedown", (e) => { mouse_state.isDown = true; });
+document.addEventListener("mouseup", (e) => { mouse_state.isDown = false; });
+
+// let blob_point = new SoftBodyPoint(canvas_center, new Vector(5, 0), 10, 0.99, -1);
+let blob = new SoftBody(canvas_center, 19, 50, 1.2, 5);
 
 function mainLoop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   for (let object of drawables) {
     object.draw();
-    object.update();
+    object.update(mouse_state);
   }
   drawables = drawables.filter(function(value, index, arr) {return value.lifetime != 0;});
 }
