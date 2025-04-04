@@ -34,27 +34,45 @@ class MouseCircle {
     ctx.arc(this.position.x, this.position.y, this.radius, 0, Math.PI*2);
     ctx.fillStyle = "#222";
     ctx.fill();
+    ctx.strokeStyle = "#000";
+    ctx.stroke();
     ctx.closePath();
   }
 }
 
 class ConstrainedPoint{
-  constructor(parent, distance, distance_constraint) {
+  static points = [];
+  constructor(parent, distance, distance_constraint, radius) {
     this.parent = parent;
     this.distance = distance;
+    this.radius = radius;
     this.distance_constraint = distance_constraint;
     this.position = getRandomPosition();
+    ConstrainedPoint.points.push(this);
   }
 
   update(mouse_state) {
     this.position = constrainDistance(this.position, this.parent.position, this.distance, this.distance_constraint);
+
+    for (let object of ConstrainedPoint.points) {
+      if (object === this) { continue; }
+      const distance = this.position.getDistance(object.position);
+      if (distance < object.radius + this.radius) {
+        const constrain_distance = (object.radius + this.radius + distance) / 2;
+        const new_position = constrainDistance(this.position, object.position, constrain_distance, DistanceConstraint.MIN_DISTANCE);
+        object.position = constrainDistance(object.position, this.position, constrain_distance, DistanceConstraint.MIN_DISTANCE);
+        this.position = new_position;
+      }
+    }
   }
 
   draw() {
     ctx.beginPath();
-    ctx.arc(this.position.x, this.position.y, 10, 0, Math.PI*2);
+    ctx.arc(this.position.x, this.position.y, this.radius, 0, Math.PI*2);
     ctx.fillStyle = "#310091";
     ctx.fill();
+    ctx.strokeStyle = "#000";
+    ctx.stroke();
     ctx.closePath();
   }
 }
@@ -65,11 +83,11 @@ class DistanceConstraintChain {
     this.points = new Array(n).fill(null).map(() => new Vector(0, 0));
   }
 
-  update(mouse_event) {
-    this.points[0] = mouse_event.position;
+  update(mouse_state) {
+    this.points[0] = mouse_state.position;
     for (let i = 1; i < this.points.length; i++) {
       const previous = this.points[i - 1];
-      // this.points[i] = this.points[i].add(gravity);
+      this.points[i] = this.points[i].add(gravity);
       this.points[i] = constrainDistance(this.points[i], previous, this.link_length, DistanceConstraint.FIXED_DISTANCE);
     }
   }
@@ -101,18 +119,18 @@ class FABRIKChain {
     this.points = new Array(n).fill(null).map(() => new Vector(0, 0));
   }
 
-  update(mouse_event) {
-    this.points[0] = mouse_event.position;
+  update(mouse_state) {
+    this.points[0] = mouse_state.position;
     for (let i = 1; i < this.points.length; i++) {
       const previous = this.points[i - 1];
-      // this.points[i] = this.points[i].add(gravity);
+      this.points[i] = this.points[i].add(gravity);
       this.points[i] = constrainDistance(this.points[i], previous, this.link_length, DistanceConstraint.FIXED_DISTANCE);
     }
 
     this.points[this.points.length - 1] = canvas_center.copy();
     for (let i = this.points.length - 1; i > 0; i--) {
       const current = this.points[i];
-      // this.points[i] = this.points[i].add(gravity);
+      this.points[i] = this.points[i].add(gravity);
       this.points[i - 1] = constrainDistance(this.points[i - 1], current, this.link_length, DistanceConstraint.FIXED_DISTANCE);
     }
   }
@@ -140,19 +158,18 @@ class FABRIKChain {
 
 let drawables = [];
 drawables.push(new MouseCircle(100))
-drawables.push(new ConstrainedPoint(drawables[0], 100, DistanceConstraint.MAX_DISTANCE));
-for (let i = 0; i < 50; i++) {
-  drawables.push(new ConstrainedPoint(drawables[0], 100, DistanceConstraint.MIN_DISTANCE));
-  drawables.push(new ConstrainedPoint(drawables[0], 100, DistanceConstraint.FIXED_DISTANCE));
+drawables.push(new ConstrainedPoint(drawables[0], 100, DistanceConstraint.MAX_DISTANCE, 10));
+for (let i = 0; i < 100; i++) {
+  drawables.push(new ConstrainedPoint(drawables[0], 100, DistanceConstraint.MIN_DISTANCE, 10));
 }
-// drawables.push(new DistanceConstraintChain(100, 5));
+drawables.push(new DistanceConstraintChain(100, 5));
 drawables.push(new FABRIKChain(50, 5));
 
 function mainLoop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   for (let object of drawables) {
-    object.update(mouse_state);
+    object.update(mouse_state, drawables);
     object.draw();
   }
 }
