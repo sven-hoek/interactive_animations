@@ -103,15 +103,19 @@ class ConstrainedPointCollection {
 
 
 let drawables = [];
-const mouse_circle_size = 250;
+const mouse_circle_size = 300;
 let big_circle =new MouseCircle(mouse_circle_size);
 drawables.push(big_circle);
-let big_circle_collection = new ConstrainedPointCollection(big_circle, 80, 3);
+let big_circle_collection = new ConstrainedPointCollection(big_circle, 140, 2);
 drawables.push(big_circle_collection);
 
 big_circle_collection.points.forEach((point) => {
-  let inner_circle_collection = new ConstrainedPointCollection(point, 7, 30);
+  let inner_circle_collection = new ConstrainedPointCollection(point, 45, 3);
   drawables.push(inner_circle_collection);
+  inner_circle_collection.points.forEach((inner_point) => {
+    let inner_inner_circle_collection = new ConstrainedPointCollection(inner_point, 5, 20);
+    drawables.push(inner_inner_circle_collection);
+  });
 });
 
 
