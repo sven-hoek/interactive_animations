@@ -6,7 +6,8 @@ categories: blog
 
 ---
 
-Touch the screen of move the mouse around to start and interact. The whole simulation bases on simple distance constraints and Verlet integration.
+Touch the screen or move the mouse around to start and interact. Note that scrolling with a touchscreen requires to touch ouside the canvas area.
+The simulation bases on simple distance constraints and Verlet integration.
 Elements either have a minimum distance (being pushed away from each other) or a maximum distance (being contained with one another).
 
 Inspired by [Sublucid Geometry's blog post](https://zalo.github.io/blog/constraints/), which has a little more info.
