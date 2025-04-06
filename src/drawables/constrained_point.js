@@ -2,12 +2,12 @@
 // A point/circle constrained to the inside/outside/outline of a parent circle (anything with a radius)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 class ConstrainedPoint{
-    constructor(parent, position, radius, constraint_type, weight) {
+    constructor(parent, start_position, radius, constraint_type, weight) {
       this.parent = parent;
       this.radius = radius;
       this.constraint_type = constraint_type;
       this.distance_to_parent = constraint_type === DistanceConstraint.MAX_DISTANCE ? parent.radius - radius : constraint_type === DistanceConstraint.MIN_DISTANCE ? parent.radius + radius : parent.radius;
-      this.position = position;
+      this.position = start_position;
       this.previous_position = this.position.copy();
       this.weight = weight;
     }
@@ -42,8 +42,8 @@ class ConstrainedPoint{
   // A collection of ConstrainedPoints, avoiding overlaps between each other, e.g. colliding with each other
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   class ConstrainedPointCollection {
-    constructor(n, parent, generatePositionFunc, radius, constraint_type, weight) {
-      this.points = new Array(n).fill(null).map(() => new ConstrainedPoint(parent, generatePositionFunc(), radius, constraint_type, weight));
+    constructor(n, parent, generateStartPositionFunc, radius, constraint_type, weight) {
+      this.points = new Array(n).fill(null).map(() => new ConstrainedPoint(parent, generateStartPositionFunc(), radius, constraint_type, weight));
     }
 
     separatePoints() {
