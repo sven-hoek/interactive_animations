@@ -11,20 +11,20 @@ const mouse_circle_size = environment.canvas.width * 0.05;
 let mouse_circle =new MouseCircle(mouse_circle_size);
 drawables.push(mouse_circle);
 
-let mouse_circle_left_chain = new SingleAnchorChain(mouse_circle, new Vector(-mouse_circle_size, 0), 70, 15, 0.2);
-drawables.push(mouse_circle_left_chain);
-let mouse_circle_right_chain = new SingleAnchorChain(mouse_circle, new Vector(mouse_circle_size, 0), 70, 15, 0.2);
-drawables.push(mouse_circle_right_chain);
-
-let fabrik_chain_canvas_center_to_mouse = new FABRIKChain(mouse_circle, new Vector(0, 0), environment.canvas.center, 70, 10, 2);
-drawables.push(fabrik_chain_canvas_center_to_mouse);
-
-let point_constrained_in_mouse_circle =  new ConstrainedPoint(mouse_circle, environment.canvas.center, 10, DistanceConstraint.MAX_DISTANCE, 0.8);
+let point_constrained_in_mouse_circle =  new ConstrainedPoint(mouse_circle, environment.canvas.center, mouse_circle.radius * 0.2, DistanceConstraint.MAX_DISTANCE, 0.8);
 drawables.push(point_constrained_in_mouse_circle);
 
 // Add circles outside the mouse-circle that have no intertia and get pushed away by the mouse circle
 let out_of_mouse_circle_collection = new ConstrainedPointCollection(300, mouse_circle, generateRandomPointOnCanvas, 5, DistanceConstraint.MIN_DISTANCE, 0.0);
 drawables.push(out_of_mouse_circle_collection);
+
+let mouse_circle_left_chain = new SingleAnchorChain(mouse_circle, new Vector(-mouse_circle_size, 0), 70, mouse_circle.radius * 0.2, 0.2);
+drawables.push(mouse_circle_left_chain);
+let mouse_circle_right_chain = new SingleAnchorChain(mouse_circle, new Vector(mouse_circle_size, 0), 70, mouse_circle.radius * 0.2, 0.2);
+drawables.push(mouse_circle_right_chain);
+
+let fabrik_chain_canvas_center_to_mouse = new FABRIKChain(mouse_circle, new Vector(0, 0), environment.canvas.center, 70, mouse_circle.radius * 0.15, 2);
+drawables.push(fabrik_chain_canvas_center_to_mouse);
 
 function mainLoop() {
   if (!environment.mouse_state.position) { return; }
