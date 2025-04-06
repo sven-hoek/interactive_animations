@@ -1,81 +1,6 @@
 // Distance constraint example, inspired by https://zalo.github.io/blog/constraints/
 
-const gravity = new Vector(0, 5);
 
-const DistanceConstraint = Object.freeze({
-  MIN_DISTANCE: 0,
-  MAX_DISTANCE: 1,
-  FIXED_DISTANCE: 2,
-});
-
-function constrainDistance(point, anchor, distance, distance_constraint) {
-  const diff = anchor.subtract(point);
-  const distance_to_anchor = diff.getMagnitude();
-  if ( distance_constraint === DistanceConstraint.FIXED_DISTANCE ||
-      (distance_constraint === DistanceConstraint.MIN_DISTANCE && distance_to_anchor < distance) ||
-      (distance_constraint === DistanceConstraint.MAX_DISTANCE && distance_to_anchor > distance)) {
-    return point.add(diff.getWithMagnitude(distance_to_anchor - distance));
-  }
-  else { return point; }
-}
-
-class MouseCircle {
-  constructor(radius) {
-    this.radius = radius;
-    this.position = new Vector(0, 0);
-  }
-
-  update(mouse_state) {
-    this.position = mouse_state.position;
-  }
-
-  draw() {
-    ctx.beginPath();
-    ctx.arc(this.position.x, this.position.y, this.radius, 0, Math.PI*2);
-    ctx.fillStyle = "#222";
-    ctx.fill();
-    ctx.strokeStyle = "#000";
-    ctx.stroke();
-    ctx.closePath();
-  }
-}
-
-class ConstrainedPoint{
-  static points = [];
-  constructor(parent, distance, distance_constraint, radius) {
-    this.parent = parent;
-    this.distance = distance;
-    this.radius = radius;
-    this.distance_constraint = distance_constraint;
-    this.position = getRandomPosition();
-    ConstrainedPoint.points.push(this);
-  }
-
-  update(mouse_state) {
-    this.position = constrainDistance(this.position, this.parent.position, this.distance, this.distance_constraint);
-
-    for (let object of ConstrainedPoint.points) {
-      if (object === this) { continue; }
-      const distance = this.position.getDistance(object.position);
-      if (distance < object.radius + this.radius) {
-        const constrain_distance = (object.radius + this.radius + distance) / 2;
-        const new_position = constrainDistance(this.position, object.position, constrain_distance, DistanceConstraint.MIN_DISTANCE);
-        object.position = constrainDistance(object.position, this.position, constrain_distance, DistanceConstraint.MIN_DISTANCE);
-        this.position = new_position;
-      }
-    }
-  }
-
-  draw() {
-    ctx.beginPath();
-    ctx.arc(this.position.x, this.position.y, this.radius, 0, Math.PI*2);
-    ctx.fillStyle = "#310091";
-    ctx.fill();
-    ctx.strokeStyle = "#000";
-    ctx.stroke();
-    ctx.closePath();
-  }
-}
 
 class DistanceConstraintChain {
   constructor(n, link_length, offset) {
@@ -84,31 +9,31 @@ class DistanceConstraintChain {
     this.points = new Array(n).fill(null).map(() => new Vector(0, 0));
   }
 
-  update(mouse_state) {
-    this.points[0] = mouse_state.position.add(this.offset);
+  update(environment) {
+    this.points[0] = environment.mouse_state.position.add(this.offset);
     for (let i = 1; i < this.points.length; i++) {
       const previous = this.points[i - 1];
-      // this.points[i] = this.points[i].add(gravity);
+      // this.points[i] = this.points[i].add(environment.gravity);
       this.points[i] = constrainDistance(this.points[i], previous, this.link_length, DistanceConstraint.FIXED_DISTANCE);
     }
   }
 
-  draw() {
+  draw(environment) {
     this.points.forEach((point, i, points) => {
-      ctx.beginPath();
-      ctx.arc(point.x, point.y, this.link_length, 0, Math.PI*2);
-      ctx.strokeStyle = "#FFFFFF";
-      ctx.stroke();
-      ctx.closePath();
+      environment.ctx.beginPath();
+      environment.ctx.arc(point.x, point.y, this.link_length, 0, Math.PI*2);
+      environment.ctx.strokeStyle = "#FFFFFF";
+      environment.ctx.stroke();
+      environment.ctx.closePath();
 
       if (i > 0) {
         const previous = points[i - 1];
-        ctx.beginPath();
-        ctx.moveTo(previous.x, previous.y);
-        ctx.lineTo(point.x, point.y);
-        ctx.strokeStyle = "#000000";
-        ctx.stroke();
-        ctx.closePath();
+        environment.ctx.beginPath();
+        environment.ctx.moveTo(previous.x, previous.y);
+        environment.ctx.lineTo(point.x, point.y);
+        environment.ctx.strokeStyle = "#000000";
+        environment.ctx.stroke();
+        environment.ctx.closePath();
       }
     });
   }
@@ -120,60 +45,76 @@ class FABRIKChain {
     this.points = new Array(n).fill(null).map(() => new Vector(0, 0));
   }
 
-  update(mouse_state) {
-    this.points[0] = mouse_state.position;
+  update(environment) {
+    this.points[0] = environment.mouse_state.position;
     for (let i = 1; i < this.points.length; i++) {
       const previous = this.points[i - 1];
-      this.points[i] = this.points[i].add(gravity);
+      this.points[i] = this.points[i].add(environment.gravity);
       this.points[i] = constrainDistance(this.points[i], previous, this.link_length, DistanceConstraint.FIXED_DISTANCE);
     }
 
-    this.points[this.points.length - 1] = canvas_center.copy();
+    this.points[this.points.length - 1] = environment.canvas.center.copy();
     for (let i = this.points.length - 1; i > 0; i--) {
       const current = this.points[i];
-      this.points[i] = this.points[i].add(gravity);
+      this.points[i] = this.points[i].add(environment.gravity);
       this.points[i - 1] = constrainDistance(this.points[i - 1], current, this.link_length, DistanceConstraint.FIXED_DISTANCE);
     }
   }
 
-  draw() {
+  draw(environment) {
     this.points.forEach((point, i, points) => {
-      ctx.beginPath();
-      ctx.arc(point.x, point.y, this.link_length, 0, Math.PI*2);
-      ctx.strokeStyle = "#000";
-      ctx.stroke();
-      ctx.closePath();
+      environment.ctx.beginPath();
+      environment.ctx.arc(point.x, point.y, this.link_length, 0, Math.PI*2);
+      environment.ctx.strokeStyle = "#000";
+      environment.ctx.stroke();
+      environment.ctx.closePath();
 
       if (i > 0) {
         const previous = points[i - 1];
-        ctx.beginPath();
-        ctx.moveTo(previous.x, previous.y);
-        ctx.lineTo(point.x, point.y);
-        ctx.strokeStyle = "#FFF";
-        ctx.stroke();
-        ctx.closePath();
+        environment.ctx.beginPath();
+        environment.ctx.moveTo(previous.x, previous.y);
+        environment.ctx.lineTo(point.x, point.y);
+        environment.ctx.strokeStyle = "#FFF";
+        environment.ctx.stroke();
+        environment.ctx.closePath();
       }
     });
   }
 }
 
+let environment = new Environment2D("myCanvas", new Vector(0, 1), 60);
+registerMouseEventListeners(environment);
+
+function generateRandomPointOnCanvas() { return getRandomPositionInRect(environment.canvas.ul, environment.canvas.br); }
+
 let drawables = [];
+
 const mouse_circle_size = 100;
-drawables.push(new MouseCircle(mouse_circle_size))
-drawables.push(new ConstrainedPoint(drawables[0], 100, DistanceConstraint.MAX_DISTANCE, 10));
-for (let i = 0; i < 100; i++) {
-  drawables.push(new ConstrainedPoint(drawables[0], 100, DistanceConstraint.MIN_DISTANCE, 10));
-}
-drawables.push(new DistanceConstraintChain(100, 5, new Vector(mouse_circle_size, 0)));
-drawables.push(new DistanceConstraintChain(100, 5, new Vector(-mouse_circle_size, 0)));
-drawables.push(new FABRIKChain(100, 5));
+let mouse_circle =new MouseCircle(mouse_circle_size);
+drawables.push(mouse_circle);
+
+let mouse_circle_left_chain = new DistanceConstraintChain(100, 5, new Vector(-mouse_circle_size, 0));
+drawables.push(mouse_circle_left_chain);
+let mouse_circle_right_chain = new DistanceConstraintChain(100, 5, new Vector(mouse_circle_size, 0));
+drawables.push(mouse_circle_right_chain);
+
+let fabrik_chain_canvas_center_to_mouse = new FABRIKChain(100, 5);
+drawables.push(fabrik_chain_canvas_center_to_mouse);
+
+let point_constrained_in_mouse_circle =  new ConstrainedPoint(mouse_circle, environment.canvas.center, 10, DistanceConstraint.MAX_DISTANCE, 0.8);
+drawables.push(point_constrained_in_mouse_circle);
+
+// Add circles outside the mouse-circle that have no intertia and get pushed away by the mouse circle
+let out_of_mouse_circle_collection = new ConstrainedPointCollection(100, mouse_circle, generateRandomPointOnCanvas, 10, DistanceConstraint.MIN_DISTANCE, 0.0);
+drawables.push(out_of_mouse_circle_collection);
 
 function mainLoop() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  if (!environment.mouse_state.position) { return; }
 
+  environment.ctx.clearRect(0, 0, environment.canvas.width, environment.canvas.height);
   for (let object of drawables) {
-    object.update(mouse_state, drawables);
-    object.draw();
+    object.update(environment);
+    object.draw(environment);
   }
 }
-setInterval(mainLoop, (1000 / 60));
+setInterval(mainLoop, environment.update_interval_ms);

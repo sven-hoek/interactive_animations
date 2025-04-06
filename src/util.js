@@ -10,3 +10,20 @@ function getRandomPositionInRect(ul, br) {
     const y = Math.random() * width_height.y;
     return new Vector(x, y).add(ul);
 }
+
+const DistanceConstraint = Object.freeze({
+    MIN_DISTANCE: 0,
+    MAX_DISTANCE: 1,
+    FIXED_DISTANCE: 2,
+});
+
+function constrainDistance(point, anchor, distance, distance_constraint) {
+    const diff = anchor.subtract(point);
+    const distance_to_anchor = diff.getMagnitude();
+    if ( distance_constraint === DistanceConstraint.FIXED_DISTANCE ||
+        (distance_constraint === DistanceConstraint.MIN_DISTANCE && distance_to_anchor < distance) ||
+        (distance_constraint === DistanceConstraint.MAX_DISTANCE && distance_to_anchor > distance)) {
+        return point.add(diff.getWithMagnitude(distance_to_anchor - distance));
+    }
+    else { return point; }
+}

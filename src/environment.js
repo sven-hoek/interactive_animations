@@ -1,5 +1,5 @@
 class Environment2D {
-    constructor(canvas_element_id, gravity) {
+    constructor(canvas_element_id, gravity, frame_rate) {
         this.canvas = document.getElementById("myCanvas");
         this.canvas.center = new Vector(this.canvas.width / 2, this.canvas.height / 2)
         this.canvas.ul = new Vector(0, 0);
@@ -12,5 +12,7 @@ class Environment2D {
             position: null,
             isDown: false,
         };
+
+        this.update_interval_ms = 1000 / frame_rate;
     }
 }

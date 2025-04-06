@@ -15,19 +15,19 @@ class SoftBodyPoint {
     console.log("Creating SoftBodyPoint", this)
   }
 
-  draw() {
-    ctx.beginPath();
-    ctx.arc(this.position.x, this.position.y, this.radius, 0, Math.PI*2);
-    ctx.fillStyle = "#0095DD";
-    ctx.fill();
-    ctx.closePath();
+  draw(environment) {
+    environment.ctx.beginPath();
+    environment.ctx.arc(this.position.x, this.position.y, this.radius, 0, Math.PI*2);
+    environment.ctx.fillStyle = "#0095DD";
+    environment.ctx.fill();
+    environment.ctx.closePath();
   }
 
   getVelocity() { return this.position.subtract(this.previous_position); }
 
-  restrictPositionToCanvas() { this.position = clampVectorToCanvas(this.position); }
+  restrictPositionToCanvas(canvas) { this.position = this.position.clampToRect(canvas.ul, canvas.br); }
 
-  integrateKinematics() {
+  integrateKinematics(gravity) {
     const velocity = this.getVelocity().add(gravity);
     const dampened_velocity = velocity.mult(this.dampening_factor);
     const new_position = this.position.add(dampened_velocity);
@@ -65,11 +65,11 @@ class SoftBodyPoint {
     }
   }
 
-  update(mouse_state) {
+  update(environment) {
     this.applyDisplacement();
-    this.applyMouseConstraint(mouse_state);
-    this.restrictPositionToCanvas();
-    this.integrateKinematics();
+    this.applyMouseConstraint(environment.mouse_state);
+    this.restrictPositionToCanvas(environment.canvas);
+    this.integrateKinematics(environment.gravity);
     this.updateLifetime();
   }
 }
@@ -143,13 +143,13 @@ class SoftBody {
     })
   }
 
-  update(mouse_state) {
+  update(environment) {
     this.applyDistanceConstraints();
     this.applyAreaConstraint();
-    this.applyAngleConstraints(Math.PI / 0.8);
+    // this.applyAngleConstraints(Math.PI / 0.8);
   }
 
-  draw() {}
+  draw(environment) {}
 
   getArea() {
     return this.points.reduce((area, cur, i, points) => {
@@ -163,26 +163,21 @@ class SoftBody {
   }
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// GLOBAL CONSTANTS
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-const gravity = new Vector(0, 0.2);
-var drawables = new Array();
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// CREATION OF OBJECTS AND UPDATE LOOP
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+let environment = new Environment2D("myCanvas", new Vector(0, 1), 60);
+let drawables = [];
 
 // let blob_point = new SoftBodyPoint(canvas_center, new Vector(5, 0), 10, 0.99, -1);
-let blob = new SoftBody(canvas_center, 19, 50, 1.2, 5);
+let blob = new SoftBody(environment.canvas.center, 19, 50, 1.2, 5);
+
+registerMouseEventListeners(environment);
 
 function mainLoop() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  if (!environment.mouse_state.position) { return; }
+
+  environment.ctx.clearRect(0, 0, environment.canvas.width, environment.canvas.height);
   for (let object of drawables) {
-    object.draw();
-    object.update(mouse_state);
+    object.update(environment);
+    object.draw(environment);
   }
-  drawables = drawables.filter(function(value, index, arr) {return value.lifetime != 0;});
 }
-setInterval(mainLoop, (1000 / 60));
+setInterval(mainLoop, environment.update_interval_ms);
