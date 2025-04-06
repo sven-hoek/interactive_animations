@@ -5,11 +5,14 @@ date:   2025-04-06 16:17:21 +0800
 categories: blog
 
 ---
-Inspired by [Sublucid Geometry's blog post](https://zalo.github.io/blog/constraints/), where you can find more info about the constraints, here is an example of combining the mentioned constraints.
 
-Touch the screen of move the mouse around to start and interact.
+Touch the screen of move the mouse around to start and interact. The whole simulation bases on simple distance constraints and Verlet integration.
+Elements either have a minimum distance (being pushed away from each other) or a maximum distance (being contained with one another).
+
+Inspired by [Sublucid Geometry's blog post](https://zalo.github.io/blog/constraints/), which has a little more info.
 
 <canvas id="circlesInCirclesCanvas"></canvas>
+
 <script src="../../../../assets/js/src/util.js"></script>
 <script src="../../../../assets/js/src/vector.js"></script>
 <script src="../../../../assets/js/src/input.js"></script>
