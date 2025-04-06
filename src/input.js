@@ -1,13 +1,12 @@
-var mouse_state = {
-    position: new Vector(0, 0),
-    isDown: false,
-};
+function registerMouseEventListeners(environment) {
+    document.addEventListener("mousemove", (e) => {
+        environment.mouse_state.position = new Vector(e.clientX - environment.canvas.offsetLeft, e.clientY - environment.canvas.offsetTop);
+    });
+    document.addEventListener("mousedown", (e) => { environment.mouse_state.isDown = true; });
+    document.addEventListener("mouseup", (e) => { environment.mouse_state.isDown = false; });
+}
 
-document.addEventListener("mousemove", (e) => {
-    mouse_state.position = new Vector(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
-});
-document.addEventListener("mousedown", (e) => { mouse_state.isDown = true; });
-document.addEventListener("mouseup", (e) => { mouse_state.isDown = false; });
+
 
 /*
 var rightPressed = false;
