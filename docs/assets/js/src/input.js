@@ -3,7 +3,8 @@ function registerMouseEventListeners(environment) {
         environment.mouse_state.position = new Vector(e.clientX - environment.canvas.offsetLeft, e.clientY - environment.canvas.offsetTop);
     });
     document.addEventListener("touchmove", (e) => {
-        const touch = e.changedTouches[0];
+        e.preventDefault();
+        const touch = e.targetTouches[0];
         environment.mouse_state.position = new Vector(touch.clientX - environment.canvas.offsetLeft, touch.clientY - environment.canvas.offsetTop);
     });
 
