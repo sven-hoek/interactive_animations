@@ -15,7 +15,7 @@ let point_constrained_in_mouse_circle =  new ConstrainedPoint(mouse_circle, envi
 drawables.push(point_constrained_in_mouse_circle);
 
 // Add circles outside the mouse-circle that have no intertia and get pushed away by the mouse circle
-let out_of_mouse_circle_collection = new ConstrainedPointCollection(300, mouse_circle, generateRandomPointOnCanvas, 5, DistanceConstraint.MIN_DISTANCE, 0.0);
+let out_of_mouse_circle_collection = new ConstrainedPointCollection(30, mouse_circle, generateRandomPointOnCanvas, environment.canvas.width * 0.05, DistanceConstraint.MIN_DISTANCE, 0.0);
 drawables.push(out_of_mouse_circle_collection);
 
 let mouse_circle_left_chain = new SingleAnchorChain(mouse_circle, new Vector(-mouse_circle_size, 0), 70, mouse_circle.radius * 0.2, 0.2);
