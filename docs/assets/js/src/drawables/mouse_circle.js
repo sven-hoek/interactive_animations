@@ -14,7 +14,7 @@ class MouseCircle {
     draw(environment) {
       environment.ctx.beginPath();
       environment.ctx.arc(this.position.x, this.position.y, this.radius, 0, Math.PI*2);
-      environment.ctx.fillStyle = "#222";
+      environment.ctx.fillStyle = "#334";
       environment.ctx.fill();
       environment.ctx.strokeStyle = "#000";
       environment.ctx.lineWidth = 2;

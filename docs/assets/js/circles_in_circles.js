@@ -1,6 +1,6 @@
 // Distance constraint example, inspired by https://zalo.github.io/blog/constraints/
 
-let environment = new Environment2D("myCanvas", new Vector(0, 1), 60);
+let environment = new Environment2D("circlesInCirclesCanvas", new Vector(0, 1), 60);
 registerMouseEventListeners(environment);
 
 function generateRandomPointOnCanvas() { return getRandomPositionInRect(environment.canvas.ul, environment.canvas.br); }

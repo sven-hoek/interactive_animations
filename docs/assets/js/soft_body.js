@@ -163,7 +163,7 @@ class SoftBody {
   }
 }
 
-let environment = new Environment2D("myCanvas", new Vector(0, 1), 60);
+let environment = new Environment2D("softBodyCanvas", new Vector(0, 1), 60);
 let drawables = [];
 
 // let blob_point = new SoftBodyPoint(canvas_center, new Vector(5, 0), 10, 0.99, -1);

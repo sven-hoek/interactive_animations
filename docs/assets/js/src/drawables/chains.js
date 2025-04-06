@@ -20,7 +20,7 @@ class SingleAnchorChain {
       this.points.forEach((point, i, points) => {
         environment.ctx.beginPath();
         environment.ctx.arc(point.x, point.y, this.link_length, 0, Math.PI*2);
-        environment.ctx.strokeStyle = "#FFFFFF";
+        environment.ctx.strokeStyle = "#CCC";
         environment.ctx.stroke();
         environment.ctx.closePath();
 
@@ -29,7 +29,7 @@ class SingleAnchorChain {
           environment.ctx.beginPath();
           environment.ctx.moveTo(previous.x, previous.y);
           environment.ctx.lineTo(point.x, point.y);
-          environment.ctx.strokeStyle = "#000000";
+          environment.ctx.strokeStyle = "#333";
           environment.ctx.stroke();
           environment.ctx.closePath();
         }
@@ -67,7 +67,7 @@ class FABRIKChain {
       this.points.forEach((point, i, points) => {
         environment.ctx.beginPath();
         environment.ctx.arc(point.x, point.y, this.link_length, 0, Math.PI*2);
-        environment.ctx.strokeStyle = "#000";
+        environment.ctx.strokeStyle = "#333";
         environment.ctx.stroke();
         environment.ctx.closePath();
 
@@ -76,7 +76,7 @@ class FABRIKChain {
           environment.ctx.beginPath();
           environment.ctx.moveTo(previous.x, previous.y);
           environment.ctx.lineTo(point.x, point.y);
-          environment.ctx.strokeStyle = "#FFF";
+          environment.ctx.strokeStyle = "#CCC";
           environment.ctx.stroke();
           environment.ctx.closePath();
         }
