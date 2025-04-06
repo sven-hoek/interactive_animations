@@ -2,8 +2,17 @@ function registerMouseEventListeners(environment) {
     document.addEventListener("mousemove", (e) => {
         environment.mouse_state.position = new Vector(e.clientX - environment.canvas.offsetLeft, e.clientY - environment.canvas.offsetTop);
     });
+    document.addEventListener("touchmove", (e) => {
+        const touch = e.changedTouches[0];
+        environment.mouse_state.position = new Vector(touch.clientX - environment.canvas.offsetLeft, touch.clientY - environment.canvas.offsetTop);
+    });
+
     document.addEventListener("mousedown", (e) => { environment.mouse_state.isDown = true; });
+    document.addEventListener("touchstart", (e) => { environment.mouse_state.isDown = true; });
+
     document.addEventListener("mouseup", (e) => { environment.mouse_state.isDown = false; });
+    document.addEventListener("touchend", (e) => { environment.mouse_state.isDown = false; });
+    document.addEventListener("touchcancel", (e) => { environment.mouse_state.isDown = false; });
 }
 
 

@@ -7,6 +7,8 @@ categories: blog
 ---
 Inspired by [Sublucid Geometry's blog post](https://zalo.github.io/blog/constraints/), where you can find more info about the constraints, here is an example of combining the mentioned constraints.
 
+Touch the screen of move the mouse around to start and interact.
+
 <canvas id="circlesInCirclesCanvas" width="890" height="890"></canvas>
 <script src="../../../../assets/js/src/util.js"></script>
 <script src="../../../../assets/js/src/vector.js"></script>
