@@ -5,7 +5,7 @@ function registerMouseEventListeners(environment) {
     document.addEventListener("touchmove", (e) => {
         e.preventDefault();
         const touch = e.targetTouches[0];
-        environment.mouse_state.position = new Vector(touch.clientX - environment.canvas.offsetLeft, touch.clientY - environment.canvas.offsetTop);
+        environment.mouse_state.position = new Vector(touch.clientX - environment.canvas.offsetLeft + window.scrollX, touch.clientY - environment.canvas.offsetTop + window.scrollY);
     });
 
     document.addEventListener("mousedown", (e) => { environment.mouse_state.isDown = true; });
