@@ -7,7 +7,7 @@ function generateRandomPointOnCanvas() { return getRandomPositionInRect(environm
 
 let drawables = [];
 
-const mouse_circle_size = 100;
+const mouse_circle_size = environment.canvas.width * 0.05;
 let mouse_circle =new MouseCircle(mouse_circle_size);
 drawables.push(mouse_circle);
 

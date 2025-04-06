@@ -9,7 +9,7 @@ Inspired by [Sublucid Geometry's blog post](https://zalo.github.io/blog/constrai
 
 Touch the screen of move the mouse around to start and interact.
 
-<canvas id="chainsCanvas" width="890" height="890"></canvas>
+<canvas id="chainsCanvas"></canvas>
 <script src="../../../../assets/js/src/util.js"></script>
 <script src="../../../../assets/js/src/vector.js"></script>
 <script src="../../../../assets/js/src/input.js"></script>

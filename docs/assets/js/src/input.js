@@ -1,6 +1,6 @@
 function registerMouseEventListeners(environment) {
     document.addEventListener("mousemove", (e) => {
-        environment.mouse_state.position = new Vector(e.clientX - environment.canvas.offsetLeft, e.clientY - environment.canvas.offsetTop);
+        environment.mouse_state.position = new Vector(e.clientX - environment.canvas.offsetLeft + window.scrollX, e.clientY - environment.canvas.offsetTop + window.scrollY);
     });
     document.addEventListener("touchmove", (e) => {
         e.preventDefault();

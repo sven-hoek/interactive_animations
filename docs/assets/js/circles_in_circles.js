@@ -7,7 +7,7 @@ function generateRandomPointOnCanvas() { return getRandomPositionInRect(environm
 
 let drawables = [];
 
-let mouse_circle =new MouseCircle(300);
+let mouse_circle =new MouseCircle(environment.canvas.width * 0.2);
 drawables.push(mouse_circle);
 
 // Add circles outside the mouse-circle that have no intertia and get pushed away by the mouse circle
@@ -15,17 +15,17 @@ let out_of_mouse_circle_collection = new ConstrainedPointCollection(1000, mouse_
 drawables.push(out_of_mouse_circle_collection);
 
 // Add circles into the mouse circle that are constrained to its inside
-let inside_mouse_circle_collection = new ConstrainedPointCollection(2, mouse_circle, generateRandomPointOnCanvas, 140, DistanceConstraint.MAX_DISTANCE, 1.0);
+let inside_mouse_circle_collection = new ConstrainedPointCollection(2, mouse_circle, generateRandomPointOnCanvas, mouse_circle.radius * 0.466, DistanceConstraint.MAX_DISTANCE, 1.0);
 drawables.push(inside_mouse_circle_collection);
 
 // Add circles to each inner circle
 inside_mouse_circle_collection.points.forEach((point) => {
-  let inner_circle_collection = new ConstrainedPointCollection(3, point, generateRandomPointOnCanvas, 45, DistanceConstraint.MAX_DISTANCE, 1.0);
+  let inner_circle_collection = new ConstrainedPointCollection(3, point, generateRandomPointOnCanvas, point.radius * 0.32, DistanceConstraint.MAX_DISTANCE, 1.0);
   drawables.push(inner_circle_collection);
 
   // And into these inner inner circles, also add more circles inside
   inner_circle_collection.points.forEach((inner_point) => {
-    let inner_inner_circle_collection = new ConstrainedPointCollection(20, inner_point, generateRandomPointOnCanvas, 5, DistanceConstraint.MAX_DISTANCE, 1.0);
+    let inner_inner_circle_collection = new ConstrainedPointCollection(20, inner_point, generateRandomPointOnCanvas, inner_point.radius * 0.11, DistanceConstraint.MAX_DISTANCE, 1.0);
     drawables.push(inner_inner_circle_collection);
   });
 });
