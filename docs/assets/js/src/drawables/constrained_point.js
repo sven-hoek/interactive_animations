@@ -12,6 +12,10 @@ class ConstrainedPoint{
       this.weight = weight;
     }
 
+    constrainToCanvas(canvas) {
+      this.position = this.position.clampToRect(canvas.ul, canvas.br, this.radius);
+    }
+
     constrainDistanceToParent() {
       this.position = constrainDistance(this.position, this.parent.position, this.distance_to_parent, this.constraint_type);
     }
@@ -24,6 +28,7 @@ class ConstrainedPoint{
 
     update(environment) {
       this.integratePosition(environment);
+      this.constrainToCanvas(environment.canvas);
       this.constrainDistanceToParent(environment);
     }
 
@@ -66,7 +71,10 @@ class ConstrainedPoint{
     update(environment) {
       this.points.forEach((point) => { point.integratePosition(environment); });
       this.separatePoints();
-      this.points.forEach((point) => { point.constrainDistanceToParent(); });
+      this.points.forEach((point) => {
+        point.constrainToCanvas(environment.canvas);
+        point.constrainDistanceToParent();
+      });
     }
 
     draw(environment) { this.points.forEach((point) => { point.draw(environment); }); }

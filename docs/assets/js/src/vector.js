@@ -33,7 +33,7 @@ class Vector {
 
     getAngle(v) { return Math.acos(this.getWithMagnitude(1).dot(v.getWithMagnitude(1))); }
 
-    clampToRect(upper_left, bottom_right) { return new Vector(clamp(this.x, upper_left.x, bottom_right.x), clamp(this.y, upper_left.y, bottom_right.y)); }
+    clampToRect(upper_left, bottom_right, margin = 0.0) { return new Vector(clamp(this.x, upper_left.x + margin, bottom_right.x - margin), clamp(this.y, upper_left.y + margin, bottom_right.y - margin)); }
 
     toString() { return `(${this.x}, ${this.y})`; }
 

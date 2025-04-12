@@ -1,7 +1,6 @@
 class Environment2D {
     constructor(canvas_element_id, gravity, frame_rate) {
         this.canvas = document.getElementById(canvas_element_id);
-        console.log("body width:", this.canvas.parentElement.offsetWidth);
         this.canvas.width = this.canvas.parentElement.offsetWidth;
         this.canvas.height = window.innerHeight * 0.8;
         this.canvas.center = new Vector(this.canvas.width / 2, this.canvas.height / 2)
