@@ -7,7 +7,7 @@ function generateRandomPointOnCanvas() { return getRandomPositionInRect(environm
 
 let drawables = [];
 
-let mouse_circle =new MouseCircle(environment.canvas.width * 0.2);
+let mouse_circle = new MouseCircle(environment.canvas.width * 0.2);
 drawables.push(mouse_circle);
 
 // Add circles outside the mouse-circle that have no intertia and get pushed away by the mouse circle

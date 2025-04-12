@@ -8,10 +8,10 @@ function generateRandomPointOnCanvas() { return getRandomPositionInRect(environm
 let drawables = [];
 
 const mouse_circle_size = environment.canvas.width * 0.05;
-let mouse_circle =new MouseCircle(mouse_circle_size);
+let mouse_circle = new MouseCircle(mouse_circle_size);
 drawables.push(mouse_circle);
 
-let point_constrained_in_mouse_circle =  new ConstrainedPoint(mouse_circle, environment.canvas.center, mouse_circle.radius * 0.2, DistanceConstraint.MAX_DISTANCE, 0.8);
+let point_constrained_in_mouse_circle = new ConstrainedPoint(mouse_circle, environment.canvas.center, mouse_circle.radius * 0.2, DistanceConstraint.MAX_DISTANCE, 0.8);
 drawables.push(point_constrained_in_mouse_circle);
 
 // Add circles outside the mouse-circle that have no intertia and get pushed away by the mouse circle
