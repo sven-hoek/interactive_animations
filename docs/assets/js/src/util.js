@@ -20,10 +20,27 @@ const DistanceConstraint = Object.freeze({
 function constrainDistance(point, anchor, distance, distance_constraint) {
     const diff = anchor.subtract(point);
     const distance_to_anchor = diff.getMagnitude();
-    if ( distance_constraint === DistanceConstraint.FIXED_DISTANCE ||
+    if (distance_constraint === DistanceConstraint.FIXED_DISTANCE ||
         (distance_constraint === DistanceConstraint.MIN_DISTANCE && distance_to_anchor < distance) ||
         (distance_constraint === DistanceConstraint.MAX_DISTANCE && distance_to_anchor > distance)) {
         return point.add(diff.getWithMagnitude(distance_to_anchor - distance));
     }
     else { return point; }
+}
+
+const SpringConstraint = Object.freeze({
+    PULL: 0,
+    PUSH: 1,
+    BOTH: 2,
+});
+
+function getSpringForceDisplacement(point, anchor, distance, spring_constraint) {
+    const diff = anchor.subtract(point);
+    const distance_to_anchor = diff.getMagnitude();
+    if (spring_constraint == SpringConstraint.BOTH ||
+        (spring_constraint == SpringConstraint.PUSH && distance_to_anchor < distance) ||
+        (spring_constraint == SpringConstraint.PULL && distance_to_anchor > distance)) {
+        return offset = diff.getWithMagnitude(distance_to_anchor - distance);
+    }
+    else { return new Vector(0, 0); }
 }
