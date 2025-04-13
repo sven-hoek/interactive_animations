@@ -7,7 +7,7 @@ class SoftBodyPoint {
     this.previous_position = position.subtract(speed);
     this.displacement = new Vector(0, 0);
     this.displacement_weight = 0;
-    this.radius =  radius
+    this.radius = radius
     this.dampening_factor = dampening_factor;
     this.lifetime = lifetime;
     drawables.push(this)
@@ -16,11 +16,7 @@ class SoftBodyPoint {
   }
 
   draw(environment) {
-    environment.ctx.beginPath();
-    environment.ctx.arc(this.position.x, this.position.y, this.radius, 0, Math.PI*2);
-    environment.ctx.fillStyle = "#0095DD";
-    environment.ctx.fill();
-    environment.ctx.closePath();
+    drawCircle(environment.ctx, this.position, this.radius, null, "#0095DD", 1);
   }
 
   getVelocity() { return this.position.subtract(this.previous_position); }
@@ -98,7 +94,7 @@ class SoftBody {
   applyDistanceConstraints() {
     for (let i = 0; i < this.iterations; ++i) {
       this.points.forEach((cur, i, points) => {
-        const next  = points[i == points.length - 1 ? 0 : i + 1];
+        const next = points[i == points.length - 1 ? 0 : i + 1];
 
         const diff = next.position.subtract(cur.position);
         if (diff.getMagnitude() != this.chord_length) {
@@ -117,7 +113,7 @@ class SoftBody {
 
     this.points.forEach((cur, i, points) => {
       const prev = points[i == 0 ? points.length - 1 : i - 1];
-      const next  = points[i == points.length - 1 ? 0 : i + 1];
+      const next = points[i == points.length - 1 ? 0 : i + 1];
       const secant = next.position.subtract(prev.position);
       const normal = secant.rotate(-Math.PI / 2).getWithMagnitude(offset);
       cur.accumulateDisplacement(normal);
@@ -127,7 +123,7 @@ class SoftBody {
   applyAngleConstraints(min_angle) {
     this.points.forEach((cur, i, points) => {
       let prev = points[i == 0 ? points.length - 1 : i - 1];
-      let next  = points[i == points.length - 1 ? 0 : i + 1];
+      let next = points[i == points.length - 1 ? 0 : i + 1];
 
       const prev_vec = prev.position.subtract(cur.position);
       const next_vec = next.position.subtract(cur.position);
@@ -149,11 +145,11 @@ class SoftBody {
     // this.applyAngleConstraints(Math.PI / 0.8);
   }
 
-  draw(environment) {}
+  draw(environment) { }
 
   getArea() {
     return this.points.reduce((area, cur, i, points) => {
-      let next  = points[i == points.length - 1 ? 0 : i + 1];
+      let next = points[i == points.length - 1 ? 0 : i + 1];
       return area + (cur.position.x - next.position.x) * ((cur.position.y + next.position.y) / 2);
     }, 0)
   }

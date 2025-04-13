@@ -18,6 +18,7 @@ Inspired by [Sublucid Geometry's blog post](https://zalo.github.io/blog/constrai
 <script src="../../../../assets/js/src/vector.js"></script>
 <script src="../../../../assets/js/src/input.js"></script>
 <script src="../../../../assets/js/src/environment.js"></script>
+<script src="../../../../assets/js/src/drawing.js"></script>
 <script src="../../../../assets/js/src/drawables/chains.js"></script>
 <script src="../../../../assets/js/src/drawables/constrained_point.js"></script>
 <script src="../../../../assets/js/src/drawables/mouse_circle.js"></script>

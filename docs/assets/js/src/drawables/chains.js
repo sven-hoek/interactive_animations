@@ -18,20 +18,11 @@ class SingleAnchorChain {
 
   draw(environment) {
     this.points.forEach((point, i, points) => {
-      environment.ctx.beginPath();
-      environment.ctx.arc(point.x, point.y, this.link_length, 0, Math.PI * 2);
-      environment.ctx.strokeStyle = "#CCC";
-      environment.ctx.stroke();
-      environment.ctx.closePath();
+      drawCircle(environment.ctx, point, this.link_length, "#CCC");
 
       if (i > 0) {
         const previous = points[i - 1];
-        environment.ctx.beginPath();
-        environment.ctx.moveTo(previous.x, previous.y);
-        environment.ctx.lineTo(point.x, point.y);
-        environment.ctx.strokeStyle = "#333";
-        environment.ctx.stroke();
-        environment.ctx.closePath();
+        drawLine(environment.ctx, previous, point, "#CCC", 1);
       }
     });
   }
@@ -65,20 +56,11 @@ class FABRIKChain {
 
   draw(environment) {
     this.points.forEach((point, i, points) => {
-      environment.ctx.beginPath();
-      environment.ctx.arc(point.x, point.y, this.link_length, 0, Math.PI * 2);
-      environment.ctx.strokeStyle = "#333";
-      environment.ctx.stroke();
-      environment.ctx.closePath();
+      drawCircle(environment.ctx, point, this.link_length, "#333");
 
       if (i > 0) {
         const previous = points[i - 1];
-        environment.ctx.beginPath();
-        environment.ctx.moveTo(previous.x, previous.y);
-        environment.ctx.lineTo(point.x, point.y);
-        environment.ctx.strokeStyle = "#CCC";
-        environment.ctx.stroke();
-        environment.ctx.closePath();
+        drawLine(environment.ctx, previous, point, "#CCC", 1);
       }
     });
   }
