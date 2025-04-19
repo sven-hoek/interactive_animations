@@ -2,7 +2,7 @@
 // A point/circle constrained to the inside/outside/outline of a parent circle (anything with a radius)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 class ConstrainedPoint {
-  constructor(parent, start_position, radius, constraint_type, weight) {
+  constructor(parent, start_position, radius, constraint_type, weight, dampening_coefficient = 0.99) {
     this.parent = parent;
     this.radius = radius;
     this.constraint_type = constraint_type;
@@ -10,6 +10,7 @@ class ConstrainedPoint {
     this.position = start_position;
     this.previous_position = this.position.copy();
     this.weight = weight;
+    this.dampening_coefficient = dampening_coefficient;
   }
 
   constrainToCanvas(canvas) {
@@ -21,9 +22,9 @@ class ConstrainedPoint {
   }
 
   integratePosition(environment) {
-    const velocity = this.position.subtract(this.previous_position).mult(this.weight);
+    const velocity = this.position.subtract(this.previous_position).mult(this.dampening_coefficient);
     this.previous_position = this.position.copy();
-    this.position = this.position.add(velocity.add(environment.gravity.mult(this.weight)));
+    this.position = this.position.add(velocity).add(environment.gravity.mult(this.weight));
   }
 
   update(environment) {
