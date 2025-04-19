@@ -79,7 +79,6 @@ class Rope {
   integratePosition(environment) {
     this.points = this.points.map((point) => {
       const velocity = point.current.subtract(point.previous);
-      // const velocity = new Vector(0, 0);
       const gravity = environment.gravity.mult(this.weight);
       return {
         current: point.current.add(velocity).add(gravity),
@@ -129,17 +128,7 @@ class Rope {
   }
 
   draw(environment) {
-    this.points.forEach((point_pair, i, points) => {
-      const point = point_pair.current;
-      drawCircle(environment.ctx, point, 10, "#333");
-
-      if (i > 0) {
-        const previous = points[i - 1].current;
-        drawLine(environment.ctx, previous, point, "#CCC", 1);
-      }
-      if (i == this.points.length - 1) {
-        drawCircle(environment.ctx, point, 20, "#CCC", "#AAA");
-      }
-    });
+    drawSmoothPath(environment.ctx, this.points.map((point_pair) => point_pair.current), "#333", 15, false);
+    drawCircle(environment.ctx, this.points[this.points.length - 1].current, 20, "#333", "#999", 3)
   }
 }

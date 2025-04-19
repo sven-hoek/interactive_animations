@@ -1,5 +1,6 @@
-function drawCircle(ctx, center, radius, color = "#000", fillColor = null, lineWidth = 1) {
+function drawCircle(ctx, center, radius, color = "#000", fillColor = null, lineWidth = 2) {
     environment.ctx.beginPath();
+    environment.ctx.lineWidth = lineWidth;
     environment.ctx.arc(center.x, center.y, radius, 0, Math.PI * 2);
 
     if (color) {
@@ -41,6 +42,34 @@ function drawArrow(ctx, from, to, color = "#000", lineWidth = 1, headLength = 10
         to.x - headLength * Math.cos(angle + Math.PI / 6),
         to.y - headLength * Math.sin(angle + Math.PI / 6)
     );
+
+    ctx.strokeStyle = color;
+    ctx.lineWidth = lineWidth;
+    ctx.stroke();
+    ctx.closePath();
+}
+
+function drawSmoothPath(ctx, points, color = "#000", lineWidth = 1, closePath = true) {
+    if (points.length < 2) return;
+
+    const first_point = points[0];
+    const last_point = points[points.length - 1];
+
+    ctx.beginPath();
+    ctx.moveTo(first_point.x, first_point.y);
+
+    points.slice(1).forEach((point, i) => {
+        const prev = points[i];
+        const mid_point = point.add(prev).mult(0.5);
+        ctx.quadraticCurveTo(prev.x, prev.y, mid_point.x, mid_point.y);
+    })
+
+    if (closePath) {
+        const mid_point = first_point.add(last_point).mult(0.5);
+        ctx.quadraticCurveTo(mid_point.x, mid_point.y, first_point.x, first_point.y);
+    } else {
+        ctx.lineTo(last_point.x, last_point.y);
+    }
 
     ctx.strokeStyle = color;
     ctx.lineWidth = lineWidth;
