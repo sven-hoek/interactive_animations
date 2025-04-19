@@ -145,7 +145,9 @@ class SoftBody {
     // this.applyAngleConstraints(Math.PI / 0.8);
   }
 
-  draw(environment) { }
+  draw(environment) {
+    drawSmoothPath(environment.ctx, this.points.map((point) => point.position), "#111", 1, true);
+  }
 
   getArea() {
     return this.points.reduce((area, cur, i, points) => {
