@@ -1,5 +1,7 @@
 function clamp(x, min, max) { return Math.max(min, Math.min(x, max)); }
 
+function wrapIndex(i, max) { return (i + max) % max; }
+
 function isWithinRange(x, min, max) { return x >= min && x <= max; }
 
 function isWithinRect(v, ul, br) { return isWithinRange(v.x, ul.x, br.x) && isWithinRange(v.y, ul.y, br.y); }
