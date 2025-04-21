@@ -13,13 +13,9 @@ class ConstrainedPoint {
     this.dampening_coefficient = dampening_coefficient;
   }
 
-  constrainToCanvas(canvas) {
-    this.position = this.position.clampToRect(canvas.ul, canvas.br, this.radius);
-  }
+  constrainToCanvas(canvas) { this.position = this.position.clampToRect(canvas.ul, canvas.br, this.radius); }
 
-  constrainDistanceToParent() {
-    this.position = constrainDistance(this.position, this.parent.position, this.distance_to_parent, this.constraint_type);
-  }
+  constrainDistanceToParent() { this.position = constrainDistance(this.position, this.parent.position, this.distance_to_parent, this.constraint_type); }
 
   integratePosition(environment) {
     const velocity = this.position.subtract(this.previous_position).mult(this.dampening_coefficient);
