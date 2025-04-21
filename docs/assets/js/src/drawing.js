@@ -49,14 +49,17 @@ function drawArrow(ctx, from, to, color = "#000", lineWidth = 1, headLength = 10
     ctx.closePath();
 }
 
-function drawSmoothPath(ctx, points, color = "#000", lineWidth = 1, closePath = true) {
+function drawSmoothPath(ctx, points, color = "#000", lineWidth = 1, closePath = true, fillColor = null) {
     if (points.length < 2) return;
 
     const first_point = points[0];
     const last_point = points[points.length - 1];
+    const mid_point_first_last = first_point.add(last_point).mult(0.5);
 
     ctx.beginPath();
-    ctx.moveTo(first_point.x, first_point.y);
+
+    if (closePath) { ctx.moveTo(mid_point_first_last.x, mid_point_first_last.y); }
+    else { ctx.moveTo(first_point.x, first_point.y); }
 
     points.slice(1).forEach((point, i) => {
         const prev = points[i];
@@ -65,8 +68,11 @@ function drawSmoothPath(ctx, points, color = "#000", lineWidth = 1, closePath = 
     })
 
     if (closePath) {
-        const mid_point = first_point.add(last_point).mult(0.5);
-        ctx.quadraticCurveTo(mid_point.x, mid_point.y, first_point.x, first_point.y);
+        ctx.quadraticCurveTo(last_point.x, last_point.y, mid_point_first_last.x, mid_point_first_last.y);
+        if (fillColor) {
+            ctx.fillStyle = fillColor;
+            ctx.fill();
+        }
     } else {
         ctx.lineTo(last_point.x, last_point.y);
     }
@@ -74,5 +80,6 @@ function drawSmoothPath(ctx, points, color = "#000", lineWidth = 1, closePath = 
     ctx.strokeStyle = color;
     ctx.lineWidth = lineWidth;
     ctx.stroke();
+
     ctx.closePath();
 }
