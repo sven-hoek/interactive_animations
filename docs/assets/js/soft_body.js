@@ -9,12 +9,12 @@ let obstacle_circle_collection = new ConstrainedPointCollection(4, phantom_circl
 drawables.push(obstacle_circle_collection);
 obstacles.push(...obstacle_circle_collection.points);
 
-let blob = new SoftBody(new Vector(environment.canvas.center.x, 100), 20, 100, 1.1, 1.2, 10, obstacles);
+let blob = new SoftBody(new Vector(environment.canvas.center.x, 100), 20, environment.canvas.width * 0.15, 1.1, 1.2, 10, obstacles);
 drawables.push(blob);
 
 registerMouseEventListeners(environment);
 
-registerFloatSlider("size", (value) => { blob.setRadius(value); }, 1);
+registerFloatSlider("size", (value) => { blob.setRadius(value * environment.canvas.width); }, 1);
 registerFloatSlider("puffiness", (value) => { blob.puffiness = value; }, 1);
 registerFloatSlider("elasticity", (value) => { blob.hull_stretchiness = value; }, 1);
 
