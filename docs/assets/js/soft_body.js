@@ -9,7 +9,7 @@ let obstacle_circle_collection = new ConstrainedPointCollection(4, phantom_circl
 drawables.push(obstacle_circle_collection);
 obstacles.push(...obstacle_circle_collection.points);
 
-let blob = new SoftBody(new Vector(environment.canvas.center.x, 100), 20, environment.canvas.width * 0.15, 1.1, 1.2, 10, obstacles);
+let blob = new SoftBody(new Vector(environment.canvas.center.x, 100), 20, environment.canvas.width * 0.15, 1.6, 1.4, 10, obstacles);
 drawables.push(blob);
 
 registerMouseEventListeners(environment);
