@@ -1,0 +1,26 @@
+---
+layout: post
+title:  "Soft Body Simulation"
+date:   2025-04-06 16:17:21 +0800
+categories: blog
+
+---
+
+The basic principle is similar to the rope from the previous post. Both ends are now connected and an additional area constraint is being applied.
+
+Touch the screen or move the mouse around to start and interact. Note that scrolling with a touchscreen requires to touch ouside the canvas area.
+The simulation bases on simple distance constraints and Verlet integration.
+
+Inspired by [Sublucid Geometry's blog post](https://zalo.github.io/blog/constraints/), which has a little more info.
+
+<canvas id="softBodyCanvas" style="touch-action:none;"></canvas>
+
+<script src="../../../../assets/js/src/util.js"></script>
+<script src="../../../../assets/js/src/vector.js"></script>
+<script src="../../../../assets/js/src/input.js"></script>
+<script src="../../../../assets/js/src/environment.js"></script>
+<script src="../../../../assets/js/src/drawing.js"></script>
+<script src="../../../../assets/js/src/drawables/chains.js"></script>
+<script src="../../../../assets/js/src/drawables/constrained_point.js"></script>
+<script src="../../../../assets/js/src/drawables/mouse_circle.js"></script>
+<script src="../../../../assets/js/soft_body.js"></script>

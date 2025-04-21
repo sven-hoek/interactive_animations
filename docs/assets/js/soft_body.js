@@ -150,7 +150,7 @@ class SoftBody {
   }
 
   draw(environment) {
-    drawSmoothPath(environment.ctx, this.points.map((point) => point.position), "#111", 1, true, "#222");
+    drawSmoothPath(environment.ctx, this.points.map((point) => point.position), "#334", 1, true, "#334");
   }
 
   getArea() {
