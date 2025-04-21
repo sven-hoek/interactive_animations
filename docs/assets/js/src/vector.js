@@ -7,6 +7,8 @@ class Vector {
     this.y = y;
   }
 
+  static fromPolar(r, theta) { return new Vector(r * Math.cos(theta), r * Math.sin(theta)); }
+
   add(v) { return new Vector(this.x + v.x, this.y + v.y); }
 
   subtract(v) { return new Vector(this.x - v.x, this.y - v.y); }
