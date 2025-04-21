@@ -158,13 +158,6 @@ class SoftBody {
 }
 
 let environment = new Environment2D("softBodyCanvas", new Vector(0, 0.5), 60);
-const sizeSlider = document.getElementById("sizeSlider");
-const sizeValue = document.getElementById("sizeValue");
-const puffinessSlider = document.getElementById("puffinessSlider");
-const puffinessValue = document.getElementById("puffinessValue");
-const elasticitySlider = document.getElementById("elasticitySlider");
-const elasticityValue = document.getElementById("elasticityValue");
-
 let drawables = [];
 
 let blob = new SoftBody(environment.canvas.center, 20, 100, 1.1, 1.2, 10);
@@ -172,32 +165,9 @@ drawables.push(blob);
 
 registerMouseEventListeners(environment);
 
-sizeSlider.addEventListener("input", (event) => {
-  const value = parseFloat(event.target.value);
-  sizeValue.textContent = value.toFixed(1);
-
-  if (blob) {
-    blob.setRadius(value);
-  }
-});
-
-puffinessSlider.addEventListener("input", (event) => {
-  const value = parseFloat(event.target.value);
-  puffinessValue.textContent = value.toFixed(1);
-
-  if (blob) {
-    blob.puffiness = value;
-  }
-});
-
-elasticitySlider.addEventListener("input", (event) => {
-  const value = parseFloat(event.target.value);
-  elasticityValue.textContent = value.toFixed(1);
-
-  if (blob) {
-    blob.hull_stretchiness = value;
-  }
-});
+registerFloatSlider("size", (value) => { blob.setRadius(value); }, 1);
+registerFloatSlider("puffiness", (value) => { blob.puffiness = value; }, 1);
+registerFloatSlider("elasticity", (value) => { blob.hull_stretchiness = value; }, 1);
 
 function mainLoop() {
   if (!environment.mouse_state.position) { return; }
