@@ -2,13 +2,12 @@
 // Class representing a point with constraints solved with the Jacobi method
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 class JacobiPoint {
-  constructor(position, dampening_factor, mouse_distance_thresh) {
+  constructor(position, dampening_factor) {
     this.position = position.copy();
     this.previous_position = position.copy();
     this.accumulated_displacement = new Vector(0, 0);
     this.accumulated_displacement_weight = 0;
     this.dampening_factor = dampening_factor;
-    this.mouse_distance_thresh = mouse_distance_thresh;
   }
 
   getVelocity() { return this.position.subtract(this.previous_position); }
@@ -24,9 +23,9 @@ class JacobiPoint {
     this.position = new_position;
   }
 
-  applyMouseConstraint(mouse_state) {
+  applyMouseConstraint(mouse_state, mouse_distance_thresh) {
     if (!mouse_state.isDown) return;
-    this.position = constrainDistance(this.position, mouse_state.position, this.mouse_distance_thresh, DistanceConstraint.MIN_DISTANCE);
+    this.position = constrainDistance(this.position, mouse_state.position, mouse_distance_thresh, DistanceConstraint.MIN_DISTANCE);
   }
 
   addDisplacement(v) {
@@ -52,24 +51,29 @@ class JacobiPoint {
 }
 
 
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Class representing an elastic, volume preserving blob
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 class SoftBody {
   constructor(center, n_points, radius, puffiness, hull_stretchiness, iterations) {
-    this.radius = radius;
-    this.area = radius * radius * Math.PI;
+    this.n_points = n_points;
     this.puffiness = puffiness;
-    this.circumference = radius * Math.PI * 2;
-    this.chord_length = this.circumference * hull_stretchiness / n_points;
+    this.hull_stretchiness = hull_stretchiness
     this.iterations = iterations;
+    this.setRadius(radius);
 
     this.points = new Array(n_points).fill(null).map((value, i) => {
       const angle = 2 * Math.PI * i / n_points;
       const offset = Vector.fromPolar(this.radius, angle);
-      return new JacobiPoint(center.add(offset), 0.99, this.radius * 0.8);
+      return new JacobiPoint(center.add(offset), 0.99);
     });
+  }
+
+  setRadius(radius) {
+    this.radius = radius;
+    this.area = radius * radius * Math.PI;
+    this.circumference = radius * Math.PI * 2;
+    this.chord_length = this.circumference / this.n_points;
   }
 
   applyDistanceConstraints(chord_length) {
@@ -123,27 +127,15 @@ class SoftBody {
     })
   }
 
-  applyMouseConstraint(mouse_state) {
-    const closest_point = this.points.reduce((closest, curr) => {
-      const dist = curr.position.getDistance(mouse_state.position);
-      if (!closest || dist < closest.distance) {
-        return { point: curr, distance: dist };
-      }
-      return closest;
-    }, null)
-
-    closest_point.point.applyMouseConstraint(mouse_state);
-  }
-
   update(environment) {
     this.points.forEach((point) => point.integrateDynamics(environment));
     for (let i = 0; i < this.iterations; ++i) {
-      this.applyDistanceConstraints(this.chord_length);
+      this.applyDistanceConstraints(this.chord_length * this.hull_stretchiness);
       this.applyAreaConstraint(this.puffiness);
       this.points.forEach((point) => point.applyDisplacements());
       this.points.forEach((point) => {
         point.constrainToCanvas(environment.canvas);
-        point.applyMouseConstraint(environment.mouse_state);
+        point.applyMouseConstraint(environment.mouse_state, this.radius * 0.8);
       });
     }
 
@@ -166,11 +158,47 @@ class SoftBody {
 }
 
 let environment = new Environment2D("softBodyCanvas", new Vector(0, 0.5), 60);
+const sizeSlider = document.getElementById("sizeSlider");
+const sizeValue = document.getElementById("sizeValue");
+const puffinessSlider = document.getElementById("puffinessSlider");
+const puffinessValue = document.getElementById("puffinessValue");
+const elasticitySlider = document.getElementById("elasticitySlider");
+const elasticityValue = document.getElementById("elasticityValue");
+
 let drawables = [];
-let blob = new SoftBody(environment.canvas.center, 20, 50, 1.1, 1.2, 10);
+
+let blob = new SoftBody(environment.canvas.center, 20, 100, 1.1, 1.2, 10);
 drawables.push(blob);
 
 registerMouseEventListeners(environment);
+
+sizeSlider.addEventListener("input", (event) => {
+  const value = parseFloat(event.target.value);
+  sizeValue.textContent = value.toFixed(1);
+
+  if (blob) {
+    blob.setRadius(value);
+  }
+});
+
+puffinessSlider.addEventListener("input", (event) => {
+  const value = parseFloat(event.target.value);
+  puffinessValue.textContent = value.toFixed(1);
+
+  if (blob) {
+    blob.puffiness = value;
+  }
+});
+
+elasticitySlider.addEventListener("input", (event) => {
+  const value = parseFloat(event.target.value);
+  elasticityValue.textContent = value.toFixed(1);
+
+  if (blob) {
+    blob.hull_stretchiness = value;
+  }
+});
+
 function mainLoop() {
   if (!environment.mouse_state.position) { return; }
 
