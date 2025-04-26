@@ -62,6 +62,8 @@ class SoftBody {
     this.iterations = iterations;
     this.obstacles = obstacles;
     this.setRadius(radius);
+    this.line_color = "#334";
+    this.fill_color = "#334";
 
     this.points = new Array(n_points).fill(null).map((value, i) => {
       const angle = 2 * Math.PI * i / n_points;
@@ -156,7 +158,7 @@ class SoftBody {
   }
 
   draw(environment) {
-    drawSmoothPath(environment.ctx, this.points.map((point) => point.position), "#334", 1, true, "#334");
+    drawSmoothPath(environment.ctx, this.points.map((point) => point.position), this.line_color, 1, true, this.fill_color);
   }
 
   getArea() {

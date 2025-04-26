@@ -18,17 +18,3 @@ class Environment2D {
         this.update_interval_ms = 1000 / frame_rate;
     }
 }
-
-function registerFloatSlider(sliderName, callback, decimals = 1) {
-    const slider = document.getElementById(sliderName + "Slider");
-    const slider_value = document.getElementById(sliderName + "Value");
-
-    slider.addEventListener("input", (event) => {
-        const value = parseFloat(event.target.value);
-        slider_value.textContent = value.toFixed(decimals);
-
-        if (callback) {
-            callback(value);
-        }
-    });
-}

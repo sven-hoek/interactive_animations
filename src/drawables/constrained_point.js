@@ -11,6 +11,8 @@ class ConstrainedPoint {
     this.previous_position = this.position.copy();
     this.weight = weight;
     this.dampening_coefficient = dampening_coefficient;
+    this.color = "#111";
+    this.fill_color = "#532FAD";
   }
 
   constrainToCanvas(canvas) { this.position = this.position.clampToRect(canvas.ul, canvas.br, this.radius); }
@@ -29,15 +31,15 @@ class ConstrainedPoint {
     this.constrainDistanceToParent(environment);
   }
 
-  draw(environment) { drawCircle(environment.ctx, this.position, this.radius, "#111", "#532FAD"); }
+  draw(environment) { drawCircle(environment.ctx, this.position, this.radius, this.color, this.fill_color); }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // A collection of ConstrainedPoints, avoiding overlaps between each other, e.g. colliding with each other
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 class ConstrainedPointCollection {
-  constructor(n, parent, generateStartPositionFunc, radius, constraint_type, weight) {
-    this.points = new Array(n).fill(null).map(() => new ConstrainedPoint(parent, generateStartPositionFunc(), radius, constraint_type, weight));
+  constructor(n, parent, generateStartPositionFunc, radius, constraint_type, weight, dampening_coefficient = 0.99) {
+    this.points = new Array(n).fill(null).map(() => new ConstrainedPoint(parent, generateStartPositionFunc(), radius, constraint_type, weight, dampening_coefficient));
   }
 
   separatePoints() {
