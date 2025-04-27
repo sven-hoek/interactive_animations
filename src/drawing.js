@@ -1,3 +1,12 @@
+/**
+ * Draw a circle on the canvas
+ * @param {CanvasRenderingContext2D} ctx The canvas context
+ * @param {Vector} center The center of the circle
+ * @param {number} radius The radius of the circle
+ * @param {string} color The color of the circle outline
+ * @param {string} fillColor The color to fill the circle with
+ * @param {number} lineWidth The line width of the circle outline
+ */
 function drawCircle(ctx, center, radius, color = "#000", fillColor = null, lineWidth = 2) {
     environment.ctx.beginPath();
     environment.ctx.lineWidth = lineWidth;
@@ -15,6 +24,14 @@ function drawCircle(ctx, center, radius, color = "#000", fillColor = null, lineW
     environment.ctx.closePath();
 }
 
+/**
+ * Draw a straight line between two points on the canvas
+ * @param {CanvasRenderingContext2D} ctx The canvas context
+ * @param {Vector} from The starting point of the line
+ * @param {Vector} to The ending point of the line
+ * @param {string} color The stroke color of the line
+ * @param {number} lineWidth The line width
+ */
 function drawLine(ctx, from, to, color = "#000", lineWidth = 1) {
     ctx.beginPath();
     ctx.moveTo(from.x, from.y);
@@ -25,6 +42,15 @@ function drawLine(ctx, from, to, color = "#000", lineWidth = 1) {
     ctx.closePath();
 }
 
+/**
+ * Draw a straight line with an arrowhead at the end
+ * @param {CanvasRenderingContext2D} ctx The canvas context
+ * @param {Vector} from The starting point
+ * @param {Vector} to The endoing point
+ * @param {string} color The color of the arrow
+ * @param {number} lineWidth The line width of the arrow
+ * @param {number} headLength The head length of the arrow
+ */
 function drawArrow(ctx, from, to, color = "#000", lineWidth = 1, headLength = 10) {
     const angle = Math.atan2(to.y - from.y, to.x - from.x);
 
@@ -49,6 +75,16 @@ function drawArrow(ctx, from, to, color = "#000", lineWidth = 1, headLength = 10
     ctx.closePath();
 }
 
+/**
+ * Draw a smooth path along a set of points
+ * @param {CanvasRenderingContext2D} ctx The canvas context
+ * @param {Vector[]} points The points to draw the path along
+ * @param {string} color The color of the path
+ * @param {number} lineWidth The line width of the path
+ * @param {bool} closePath If `true`, the first and the last point will be connected
+ * @param {string?} fillColor When closing the path, fill with this color
+ * @returns 
+ */
 function drawSmoothPath(ctx, points, color = "#000", lineWidth = 1, closePath = true, fillColor = null) {
     if (points.length < 2) return;
 

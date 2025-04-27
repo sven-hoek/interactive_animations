@@ -1,4 +1,9 @@
 /**
+ * @file ndarray.js
+ * @description This file contains functions for creating, manipulating, and performing operations on n-dimensional arrays.
+ */
+
+/**
  * Calculate the Frobenius norm of a 2D array
  * @param {number[][]} arr A 2D array
  * @returns The Frobenius norm of the array (the square root of the sum of the squares of its elements)
