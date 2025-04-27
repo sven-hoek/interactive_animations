@@ -28,6 +28,23 @@ function wrapIndex(i, max) { return (i + max) % max; }
 function isWithinRange(x, min, max) { return x >= min && x <= max; }
 
 /**
+ * Project values so that the range [0, 1] gets projected onto [min, max].
+ * @param {number} x The value to project
+ * @param {*} min The lower bound of the target range
+ * @param {*} max The upper bound of the target range
+ * @param {*} clampToBounds If `true`, will clamp the value so that the returned value is guaranteed to be within the target range.
+ * @returns The projected value
+ * @example
+ * projectToRange(0.5, 3, 5); // Returns 4.0
+ * projectToRange(1.5, 3, 5, false); // Returns 6.0
+ * projectToRange(1.5, 3, 5, true); // Returns 5.0
+ */
+function projectToRange(x, min, max, clampToBounds = false) {
+    if (clampToBounds) { x = clamp(x, 0.0, 1.0); }
+    return min + (max - min) * x;
+}
+
+/**
  * Checks if a vector is within a specified rectangle defined by its upper-left and bottom-right corners.
  * @param {Vector} v The vector to check
  * @param {Vector} ul The upper-left corner of the rectangle

@@ -119,3 +119,13 @@ function drawSmoothPath(ctx, points, color = "#000", lineWidth = 1, closePath = 
 
     ctx.closePath();
 }
+
+function drawFractalTreeLine(ctx, start, length, branch_angle, current_angle, current_level, color = "#111", shortening_factor = 1.0) {
+    if (current_level < 0) { return; }
+
+    const end = start.add(Vector.fromPolar(length, current_angle));
+    drawLine(ctx, start, end, color, current_level);
+
+    drawFractalTreeLine(ctx, end, length * shortening_factor, branch_angle, current_angle + branch_angle, current_level - 1, color, shortening_factor);
+    drawFractalTreeLine(ctx, end, length * shortening_factor, branch_angle, current_angle - branch_angle, current_level - 1, color, shortening_factor);
+}
