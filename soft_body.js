@@ -5,7 +5,7 @@ let obstacles = [];
 function generateRandomPointOnBottomHalfOfCanvas() { return getRandomPositionInRect(new Vector(0, environment.canvas.center.y), environment.canvas.br); }
 
 let phantom_circle = { position: new Vector(-100, -100), radius: 0 };
-let obstacle_circle_collection = new ConstrainedPointCollection(4, phantom_circle, generateRandomPointOnBottomHalfOfCanvas, environment.canvas.width * 0.21, DistanceConstraint.MIN_DISTANCE, 0.85);
+let obstacle_circle_collection = new ConstrainedPointCollection(3, phantom_circle, generateRandomPointOnBottomHalfOfCanvas, environment.canvas.width * 0.18, DistanceConstraint.MIN_DISTANCE, 0.85);
 drawables.push(obstacle_circle_collection);
 obstacles.push(...obstacle_circle_collection.points);
 

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>FCM Example</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+        body {
+            margin: 0 auto;
+            max-width: 1000px;
+            padding: 1em;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Fuzzy C-Means Clustering</h1>
+
+    <div class="slider-container">
+        <label for="numClustersSlider">Number of Clusters</label>
+        <span id="numClustersValue">3</span>
+        <input id="numClustersSlider" type="range" min="2" max="20" step="1" value="3" />
+    </div>
+
+    <div class="slider-container">
+        <label for="fuzzinessSlider">Fuzziness</label>
+        <span id="fuzzinessValue">1.5</span>
+        <input id="fuzzinessSlider" type="range" min="1.001" max="3.5" step="0.001" value="1.5" />
+    </div>
+
+    <div class="slider-container">
+        <label for="maxIterationsSlider">Max Iterations</label>
+        <span id="maxIterationsValue">30</span>
+        <input id="maxIterationsSlider" type="range" min="1" max="200" step="1" value="30" />
+    </div>
+
+    <div class="slider-container">
+        <label for="errorToleranceSlider">Error Tolerance</label>
+        <span id="errorToleranceValue">0.001</span>
+        <input id="errorToleranceSlider" type="range" min="0.0" max="0.1" step="0.0001" value="0.001" />
+    </div>
+
+    <div class="button-container">
+        <button id="runAlgorithmButton">Run Algorithm</button>
+    </div>
+
+
+    <canvas id="fcmCanvas"></canvas>
+
+    <script src="src/util.js"></script>
+    <script src="src/vector.js"></script>
+    <script src="src/input.js"></script>
+    <script src="src/environment.js"></script>
+    <script src="src/drawing.js"></script>
+    <script src="src/drawables/mouse_circle.js"></script>
+    <script src="src/drawables/constrained_point.js"></script>
+    <script src="src/drawables/soft_body.js"></script>
+    <script src="src/ndarray.js"></script>
+    <script src="src/colors.js"></script>
+    <script src="src/fcm.js"></script>
+    <script src="fcm_example.js"></script>
+
+</body>
+
+</html>

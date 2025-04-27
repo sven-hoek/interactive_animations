@@ -10,7 +10,7 @@ let drawables = [];
 let mouse_circle = new MouseCircle(Math.min(environment.canvas.width * 0.2, 200));
 drawables.push(mouse_circle);
 
-// Add circles outside the mouse-circle that have no intertia and get pushed away by the mouse circle
+// Add circles outside the mouse-circle that get pushed away by it
 let out_of_mouse_circle_collection = new ConstrainedPointCollection(1000, mouse_circle, generateRandomPointOnCanvas, 3, DistanceConstraint.MIN_DISTANCE, 0.85);
 drawables.push(out_of_mouse_circle_collection);
 

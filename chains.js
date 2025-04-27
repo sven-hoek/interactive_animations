@@ -1,5 +1,3 @@
-// Distance constraint example, inspired by https://zalo.github.io/blog/constraints/
-
 let environment = new Environment2D("chainsCanvas", new Vector(0, 1), 60);
 registerMouseEventListeners(environment);
 
@@ -14,7 +12,7 @@ drawables.push(mouse_circle);
 let point_constrained_in_mouse_circle = new ConstrainedPoint(mouse_circle, environment.canvas.center, mouse_circle.radius * 0.2, DistanceConstraint.MAX_DISTANCE, 0.8);
 drawables.push(point_constrained_in_mouse_circle);
 
-// Add circles outside the mouse-circle that have no intertia and get pushed away by the mouse circle
+// Add circles outside the mouse-circle that get pushed away by the it
 let out_of_mouse_circle_collection = new ConstrainedPointCollection(50, mouse_circle, generateRandomPointOnCanvas, mouse_circle_size, DistanceConstraint.MIN_DISTANCE, 1.0);
 drawables.push(out_of_mouse_circle_collection);
 

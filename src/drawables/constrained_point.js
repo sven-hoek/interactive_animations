@@ -12,7 +12,7 @@ class ConstrainedPoint {
     this.weight = weight;
     this.dampening_coefficient = dampening_coefficient;
     this.color = "#111";
-    this.fill_color = "#532FAD";
+    this.fill_color = "#646cff";
   }
 
   constrainToCanvas(canvas) { this.position = this.position.clampToRect(canvas.ul, canvas.br, this.radius); }

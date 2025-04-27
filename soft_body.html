@@ -4,51 +4,38 @@
 <head>
     <meta charset="utf-8" />
     <title>Soft Body</title>
+    <link rel="stylesheet" href="styles.css" />
     <style>
-        * {
-            padding: 0;
-            margin: 0;
-            background-color: #555;
-            font-family: sans-serif;
-            ;
-        }
-
         body {
-            height: 100vh;
-        }
-
-        canvas {
-            background: #444;
-            display: block;
             margin: 0 auto;
-        }
-
-        .slider-container {
-            margin-top: 10px;
-            color: white;
-            text-align: left;
+            max-width: 1000px;
+            padding: 1em;
         }
     </style>
 </head>
 
 <body>
+    <h1>Soft Body Simulation</h1>
+
+    <div class="slider-container">
+        <label for="sizeSlider">Size</label>
+        <span id="sizeValue">0.15</span>
+        <input id="sizeSlider" type="range" min="0.1" max="1.0" step="0.01" value="0.15" />
+    </div>
+
+    <div class="slider-container">
+        <label for="puffinessSlider">Puffiness</label>
+        <span id="puffinessValue">1.6</span>
+        <input id="puffinessSlider" type="range" min="0.5" max="2.0" step="0.05" value="1.6" />
+    </div>
+
+    <div class="slider-container">
+        <label for="elasticitySlider">Hull Elasticity</label>
+        <span id="elasticityValue">1.4</span>
+        <input id="elasticitySlider" type="range" min="0.5" max="2.0" step="0.05" value="1.4" />
+    </div>
 
     <canvas id="softBodyCanvas"></canvas>
-
-
-    <div class="slider-container">
-        <input id="sizeSlider" type="range" min="0.1" max="1.0" step="0.01" value="0.15" />
-        <label for="sizeSlider"><span id="sizeValue">0.15</span> Size</label>
-    </div>
-    <div class="slider-container">
-        <input id="puffinessSlider" type="range" min="0.5" max="2.0" step="0.05" value="1.6" />
-        <label for="puffinessSlider"><span id="puffinessValue">1.6</span> Puffiness</label>
-    </div>
-
-    <div class="slider-container">
-        <input id="elasticitySlider" type="range" min="0.5" max="2.0" step="0.05" value="1.4" />
-        <label for="elasticitySlider"><span id="elasticityValue">1.4</span> Hull Elasticity</label>
-    </div>
 
     <script src="src/util.js"></script>
     <script src="src/vector.js"></script>
